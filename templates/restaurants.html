@@ -1,0 +1,97 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<nav class="navbar navbar-light bg-light">
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav navbar-left">
+     <img src="{{ PIC }}" width="90" height="90"class="d-inline-block align-top img-fluid" alt="">                
+    </ul>
+<ul class="nav navbar-nav navbar-right">
+    <h6> {{ USER }}</h6>
+</ul>
+</div>
+</nav>
+	<div class="row top-menu">
+		<div class="col-md-10"></div>
+		<div class="col-md-2 text-right">
+               
+
+          
+<script>
+function logout() {
+ /*  if (authResult['code']) {
+    // Hide the sign-in button now that the user is authorized*/
+    $('#signinButton').attr('style', 'display: none');
+    // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
+    $.ajax({
+      type: 'GET',
+      url: '/gdisconnect',
+      success: function(result) {
+        // Handle or verify the server response if necessary.
+        if (result) {
+          
+         setTimeout(function() {
+          window.location.href = "/restaurant";
+         }, 600);
+          
+      }
+        else {
+          alert("Erro no logout");
+         }
+      }
+      
+  }); }
+</script>
+     
+ <button id="signinButton" class="loginBtn loginBtn--google" onclick="logout()">Logout</button>
+					</div>
+	</div>
+	<div class="navbar navbar-light bg-light">
+		<div class="col-md-12"><a href="{{url_for('showRestaurants')}}">
+			<span class="glyphicon glyphicon-home" aria-hidden="true"></span>Show All Restaurants
+		</a></div>
+	</div>
+	<div class="navbar banner main">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+			<h1>Restaurants</h1>
+		</div>
+	</div>
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+	
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 padding-none">
+			<a href="{{url_for('newRestaurant')}}">
+				<button class="btn_btn btn-default" id="new-restaurant">
+					<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Restaurant
+				</button>
+			</a>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+	{% for restaurant in restaurants %}
+		<a href = "{{url_for('showMenu', restaurant_id = restaurant.id)}}">
+			<div class="row">
+				<div class="col-md-1"></div>
+					<div class="col-md-10 restaurant-list">
+						<h3>{{restaurant.name}}</h3>
+					</div>
+				<div class="col-md-1"></div>
+			</div>
+		</a>
+	{% endfor %}
+{% endblock %}
