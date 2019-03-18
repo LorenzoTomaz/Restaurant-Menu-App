@@ -28,9 +28,9 @@ function signInCallback(authResult) {
       success: function(result) {
         // Handle or verify the server response if necessary.
         if (result) {
-         setTimeout(function() {
+         
           window.location.href = "/restaurant";
-         }, 600);
+         
           
       } else if (authResult['error']) {
     console.log('There was an error: ' + authResult['error']);
@@ -49,7 +49,7 @@ function signInCallback(authResult) {
 	<div class="row banner main">
 		<div class="col-md-1"></div>
 		<div class="col-md-11 padding-none">
-			<h1>Restaurants</h1>
+			<h1>Restaurantes</h1>
 		</div>
 	</div>
 

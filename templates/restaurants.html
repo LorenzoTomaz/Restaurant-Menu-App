@@ -30,9 +30,8 @@ function logout() {
         // Handle or verify the server response if necessary.
         if (result) {
           
-         setTimeout(function() {
+         
           window.location.href = "/restaurant";
-         }, 600);
           
       }
         else {
@@ -48,13 +47,13 @@ function logout() {
 	</div>
 	<div class="navbar navbar-light bg-light">
 		<div class="col-md-12"><a href="{{url_for('showRestaurants')}}">
-			<span class="glyphicon glyphicon-home" aria-hidden="true"></span>Show All Restaurants
+			<span class="glyphicon glyphicon-home" aria-hidden="true"></span>Todos os Restaurantes
 		</a></div>
 	</div>
-	<div class="navbar banner main">
+	<div class="row banner main">
 		<div class="col-md-1"></div>
 		<div class="col-md-11 padding-none">
-			<h1>Restaurants</h1>
+			<h1>Restaurantes</h1>
 		</div>
 	</div>
 
@@ -77,7 +76,7 @@ function logout() {
 		<div class="col-md-10 padding-none">
 			<a href="{{url_for('newRestaurant')}}">
 				<button class="btn_btn btn-default" id="new-restaurant">
-					<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Restaurant
+					<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Adicione um Restaurante
 				</button>
 			</a>
 		</div>

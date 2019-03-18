@@ -40,7 +40,7 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-3">
-				<h2>Appetizers</h2>
+				<h2>Aperitivos</h2>
 					{% for i in items %}
 						{% if i.course == 'Appetizer' %}
 							<div class="menu-item">
@@ -53,7 +53,7 @@
 					{% endfor %}
 			</div>
 			<div class="col-md-4">			
-				<h2>Entrees</h2>
+				<h2>Entradas</h2>
 					{% for i in items %}
 						{% if i.course == 'Entree' %}
 						<div class="menu-item">
@@ -66,7 +66,7 @@
 					{% endfor %}
 			</div>
 			<div class="col-md-3">
-				<h2>Desserts</h2>
+				<h2>Sobremesas</h2>
 					{% for i in items %}
 						{% if i.course == 'Dessert' %}
 						<div class="menu-item">
@@ -77,7 +77,7 @@
 						</div>
 						{% endif %}
 					{% endfor %}
-				<h2>Beverages</h2>
+				<h2>Bebidas</h2>
 					{% for i in items %}
 						{% if i.course == 'Beverage' %}
 						<div class="menu-item">
