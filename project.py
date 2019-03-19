@@ -348,7 +348,7 @@ def deleteMenuItem(restaurant_id, menu_id):
         flash('item do menu deletado com sucesso')
         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
     else:
-        return render_template('deleteMenuItem.html', item=itemToDelete)
+        return render_template('deletemenuitem.html', item=itemToDelete)
 
 
 if __name__ == '__main__':
