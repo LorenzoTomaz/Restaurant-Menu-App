@@ -181,7 +181,7 @@ def gdisconnect():
         return response
 
 
-# API endopoint para visualizar menu de um dado restaurante com response em json
+# API endpoint para visualizar menu de um dado restaurante com response em json
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -189,13 +189,15 @@ def restaurantMenuJSON(restaurant_id):
         restaurant_id=restaurant_id).all()
     return jsonify(MenuItems=[i.serialize for i in items])
 
-# API endopoint para visualizar itens do menu de um dado restaurante com response em json
+# API endpoint para visualizar itens do menu de um dado restaurante com response em json
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
 def menuItemJSON(restaurant_id, menu_id):
-    Menu_Item = session.query(MenuItem).filter_by(id=menu_id).one()
+    Menu_Item = session.query(MenuItem).filter_by(id=menu_id).filter_by(restaurant_id=restaurant_id).first()
+    if Menu_Item == None:
+       return jsonify(None)
     return jsonify(Menu_Item=Menu_Item.serialize)
-
-# API endopoint para visualizar todos os restaurantes com response em json
+	
+# API endpoint para visualizar todos os restaurantes com response em json
 @app.route('/restaurant/JSON')
 def restaurantsJSON():
     restaurants = session.query(Restaurant).all()
@@ -228,6 +230,7 @@ def newRestaurant():
         newRestaurant = Restaurant(
             name=request.form['name'], user_id=login_session['user_id'])
         session.add(newRestaurant)
+        session.commit()
         flash('Novo restaurante {} criado com sucesso'.format(newRestaurant.name))
         session.commit()
         return redirect(url_for('showRestaurants'))
@@ -248,6 +251,8 @@ def editRestaurant(restaurant_id):
     if request.method == 'POST':
         if request.form['name']:
             editedRestaurant.name = request.form['name']
+            session.add(editedRestaurant)
+            session.commit()
             flash('Restaurante editado com sucesso {}'.format(editedRestaurant.name))
             return redirect(url_for('showRestaurants'))
     else:
@@ -264,9 +269,13 @@ def deleteRestaurant(restaurant_id):
     if restaurantToDelete.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('Você não está autorizado para deletar esse restaurante. Por favor crie um restaurante para poder deleta-lo.');location.href='/restaurant';}</script><body onload='myFunction()''>"
     if request.method == 'POST':
+      if request.form.get('deletar') == "deletar":
         session.delete(restaurantToDelete)
+        items_to_delete = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).delete(synchronize_session='fetch')
         flash('{} Deletado com sucesso'.format(restaurantToDelete.name))
         session.commit()
+        return redirect(url_for('showRestaurants', restaurant_id=restaurant_id))
+      else:
         return redirect(url_for('showRestaurants', restaurant_id=restaurant_id))
     else:
         return render_template('deleteRestaurant.html', restaurant=restaurantToDelete)
@@ -343,10 +352,13 @@ def deleteMenuItem(restaurant_id, menu_id):
     if login_session['user_id'] != restaurant.user_id:
         return "<script>function myFunction() {alert('Você não está autorizado para deletar os items deste restaurante. Por favor crie um restaurante para poder deleta seus itens.');location.href='/restaurant';}</script><body onload='myFunction()''>"
     if request.method == 'POST':
-        session.delete(itemToDelete)
-        session.commit()
-        flash('item do menu deletado com sucesso')
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+         if request.form.get('deletar') == "deletar":
+           session.delete(itemToDelete)
+           session.commit()
+           flash('item do menu deletado com sucesso')
+           return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+         else:
+            return redirect(url_for('showMenu', restaurant_id=restaurant_id))
     else:
         return render_template('deletemenuitem.html', item=itemToDelete)
 

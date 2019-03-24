@@ -108,7 +108,6 @@ h3 {
 }
 .banner.main {
 	height: 150px;
-	/*background: url("/static/top-banner.jpg");*/
 	background-position: right;
 	background-repeat: no-repeat;
 	background-size: cover;
