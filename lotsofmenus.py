@@ -3,7 +3,8 @@ from sqlalchemy.orm import sessionmaker
 
 from database_setup import Restaurant, Base, MenuItem, User
 
-engine = create_engine('sqlite:///restaurantmenuwithusers.db')
+#engine = create_engine('sqlite:///restaurantmenuwithusers.db')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
@@ -116,10 +117,7 @@ session.commit()
 
 menuItem2 = MenuItem(user_id=1, name="Peking Duck",
                      description=" A famous duck dish from Beijing[1] that\
-                     has been prepared since the imperial era. The meat is \
-                     prized for its thin, crisp skin, with authentic versions\
-                     of the dish serving mostly the skin and little meat,\
-                     sliced in front of the diners by the cook",
+                     has been prepared since the imperial era.",
                      price="25", course="Entree", restaurant=restaurant2)
 
 session.add(menuItem2)
@@ -151,11 +149,7 @@ session.add(menuItem5)
 session.commit()
 
 menuItem6 = MenuItem(user_id=1, name="Ramen",
-                     description="a Japanese noodle soup dish. It consists\
-                     of Chinese-style wheat noodles served in a meat- or \
-                     (occasionally) fish-based broth, often flavored with \
-                     soy sauce or miso, and uses toppings such as sliced \
-                     pork, dried seaweed, kamaboko, and green onions.",
+                     description="a Japanese noodle soup dish.",
                      price="12", course="Entree", restaurant=restaurant2)
 
 session.add(menuItem6)
@@ -181,8 +175,7 @@ session.commit()
 menuItem2 = MenuItem(user_id=1, name="Chinese Dumplings",
                      description="a common Chinese dumpling which generally\
                      consists of minced meat and finely chopped vegetables \
-                     wrapped into a piece of dough skin. The skin can be \
-                     either thin and elastic or thicker.",
+                     wrapped into a piece of dough skin.",
                      price="6.99", course="Appetizer", restaurant=restaurant1)
 
 session.add(menuItem2)

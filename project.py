@@ -15,14 +15,14 @@ import requests
 
 app = Flask(__name__)
 
-CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('/var/www/catalog/catalog/client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu Application"
 
 
 # Conectando com o bando de dados e criando sessão do db
-engine = create_engine(
-    'sqlite:///restaurantmenuwithusers.db?check_same_thread=False')
+#engine = create_engine(
+ #   'sqlite:///restaurantmenuwithusers.db?check_same_thread=False')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -38,7 +38,7 @@ def create_state():
     return state
 
 
-@app.route('/gconnect', methods=['POST'])
+@app.route('/gconnect/', methods=['POST'])
 def gconnect():
     # Validando state
     if request.args.get('state') != login_session['state']:
@@ -52,7 +52,7 @@ def gconnect():
     try:
         # criando credenciais
         oauth_flow = flow_from_clientsecrets(
-            'client_secrets.json', scope='')
+            '/var/www/catalog/catalog/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -65,13 +65,15 @@ def gconnect():
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
+    #url = ('https://oauth2.googleapis.com/tokeninfo?id_token={}'.format(access_token))
     h = httplib2.Http()
     response = h.request(url, 'GET')[1]
     str_response = response.decode('utf-8')
     result = json.loads(str_response)
 
     if result.get('error') is not None:
-        response = make_response(json.dumps(result.get('error')), 500)
+        #response = make_response(json.dumps(result.get('error')), 500)
+        response = make_response(json.dumps(access_token), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -153,7 +155,7 @@ def getUserID(email):
 
 
 # função para desconectar usuário e limpar os dados de sessão do usuário
-@app.route('/gdisconnect')
+@app.route('/gdisconnect/')
 def gdisconnect():
 
     access_token = login_session.get('access_token')
@@ -193,7 +195,7 @@ def gdisconnect():
 
 
 # API endpoint para visualizar menu de um dado restaurante com response em json
-@app.route('/restaurant/<int:restaurant_id>/menu/JSON')
+@app.route('/restaurant/<int:restaurant_id>/menu/JSON/')
 def restaurantMenuJSON(restaurant_id):
     restaurant = session.query(
         Restaurant).filter_by(id=restaurant_id).one()
@@ -203,7 +205,7 @@ def restaurantMenuJSON(restaurant_id):
 
 # API endpoint para visualizar itens do menu de um dado \
 # restaurante com response em json
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON/')
 def menuItemJSON(restaurant_id, menu_id):
     Menu_Item = session.query(MenuItem).filter_by(
         id=menu_id).filter_by(restaurant_id=restaurant_id).first()
@@ -212,7 +214,7 @@ def menuItemJSON(restaurant_id, menu_id):
     return jsonify(Menu_Item=Menu_Item.serialize)
 
 # API endpoint para visualizar todos os restaurantes com response em json
-@app.route('/restaurant/JSON')
+@app.route('/restaurant/JSON/')
 def restaurantsJSON():
     restaurants = session.query(Restaurant).all()
     return jsonify(restaurants=[r.serialize for r in restaurants])
@@ -416,8 +418,9 @@ restaurante para poder deleta seus itens.');location.href='/restaurant';}\
     else:
         return render_template('deletemenuitem.html', item=itemToDelete)
 
-
+app.secret_key = 'super_secret_key'
+app.debug = False
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = False
+#    app.secret_key = 'super_secret_key'
+#    app.debug = False
     app.run(host='0.0.0.0', port=5000)
